@@ -1,0 +1,70 @@
+html  {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #282828;
+}
+
+body  {
+  font-weight:400;
+  font-style:normal;
+  letter-spacing: 0.1px;
+  font-size: 17px;
+  color: #D3D3D3;
+  min-height: 100%;
+  max-width: 100%;
+  min-height: 100%;
+  margin: auto;
+  padding: 35px 60px;
+}
+
+#header {
+  width:100%;
+  overflow: hidden;
+  letter-spacing 0px;
+}
+
+.title  {
+  font-size: 36px;
+  color:inherit;
+  text-decoration: inherit;
+}
+
+.subtitle {
+  font-size: 18px;
+  color:inherit;
+  text-decoration: inherit;
+}
+
+#footer {
+  width:100%;
+  overflow: hidden;
+  letter-spacing 0px;
+}
+
+.link  {
+  color:inherit;
+  text-decoration: inherit;
+}
+
+.collapsible {
+  background-color:#282828;
+  color:inherit;
+  cursor:pointer;
+  padding:18px;
+  width:100%;
+  border:none;
+  text-align:left;
+  outline:none;
+  font-size:28px;
+}
+
+.active, .collapsible:hover {
+  background-color:#CE8781;
+}
+
+.content {
+  padding: 0 18px;
+  display:none;
+  overflow:hidden;
+  background-color:inherit;
+}
