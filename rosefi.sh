@@ -1,11 +1,42 @@
 #!/bin/bash
 
-# Prints sudoers files
-function sudoers {
-  grep -v '#' /etc/sudoers | awk 'NF'
-}
+# --- VARIABLES --- #
 
-# Lists services on systems with systemd and Upstart
+# Creates DESKTOP containing the current desktop environment 
+if [ "$XDG_CURRENT_DESKTOP" = "" ]
+then
+  DESKTOP=$(echo "$XDG_DATA_DIRS" | sed 's/.*\(xfce\|kde\|gnome\).*/\1/')
+else
+  DESKTOP=$XDG_CURRENT_DESKTOP
+fi
+DESKTOP=${DESKTOP,,}
+
+# Date and time
+TIME=$(date +"%H:%M:%S")
+
+# System information
+USER=$(whoami)
+HOST=$(hostname)
+OS=$(grep 'PRETTY_NAME' < /etc/os-release | sed 's/"//g' | sed 's/PRETTY_NAME=//')
+KERNEL=$(uname -r)
+UP=$(uptime -p)
+SHELL=$0
+
+# --- FUNCTIONS --- #
+
+# sudoers files
+function sudoers {
+  echo "/etc/sudoers"
+  grep -v '#' /etc/sudoers | awk 'NF'
+  if [ -d /etc/sudoers.d ]; then
+    for file in /etc/sudoers.d/*; do
+      echo "$file"
+      grep -v '#' $file | awk 'NF'
+    done
+  fi
+} 
+
+# Lists services on systems with systemd or Upstart
 function services {
   if hash systemctl 2>/dev/null; then
     systemctl -r --type service --all
@@ -17,59 +48,118 @@ function services {
 }
 
 # Lists mediafiles
-function lismedia {
+function mediafiles {
   for filetype in *.jpeg , *.mp4 , *.webm , *.mkv , *.flv , *.vob , *.omv , *.ogg , *.drc , *.gif , *.gifv , *.mng , *.avi , *.mov , *.qt , *.wmv , *.yuh , *.rm , *.rmvb , *.asf , *.amv , *.mp4 , *.m4p , *.m4v , *.mpg , *.m4v , *.mpg , *.mp2 , *.mpeg , *.mpe , *.mpv , *.m2v , *.svi , *.3gp , *.3g2 , *.mxf , *.roq , *.nsv , *.flv , *.f4p , *.f4a , *.f4b , *.aif , *.iff , *.m3u , *.m4a , *.mid , *.mp3 , *.mpa , *.wav , *.wma , *.bmp , *.dds , *.jpg , *.png , *.psd , *.pspimage , *.tga , *.thm , *.tif , *.tiff , *.yuv , *.flac
   do
-    find /home -iname $filetype -type f
+    find / -iname $filetype -type f 2>/dev/null
   done
 }
 
-# Determines the DE and makes it the $desktop variable
-if [ "$XDG_CURRENT_DESKTOP" = "" ]
-then
-  desktop=$(echo "$XDG_DATA_DIRS" | sed 's/.*\(xfce\|kde\|gnome\).*/\1/')
-else
-  desktop=$XDG_CURRENT_DESKTOP
-fi
-desktop=${desktop,,}
-
-# Lists crontabs for each user account
+# Lists crontabs
 function crontabs {
-  # Prints user crontabs
+  # user crontabs
   cut -f1 -d: /etc/passwd | while read -r user; do
     if [[ $user  = *"no crontab for"* ]];
     then
       :
     else
+      echo "$user:"
       crontab -u $user -l
     fi
   done
 
-  # cron.d/ cron.daily/ cron.hourly/ cron.monthly/ cron.weekly/
-  # Prints jobs from /etc/crontab
+  # jobs from /etc/crontab
   echo "/etc/crontab"
-  cat /etc/crontab
+  < /etc/crontab
 
-  # Prints Daily cronjobs
-  echo "Daily Jobs"
-  cat /etc/cron.daily/*
+  # Daily cronjobs
+  if [ -d /etc/cron.daily ]; then
+    echo "Daily Jobs"
+    cat /etc/cron.daily/*
+  fi
 
-  # Prints Weekly cronjobs
-  echo "Weekly Jobs"
-  cat /etc/cron.weekly/*
+  # Weekly cronjobs
+  if [ -d /etc/cron.weekly ]; then
+    echo "Weekly Jobs"
+    cat /etc/cron.weekly/*
+  fi
 
-  # Prints Monthly cronjobs
-  echo "Monthly Jobs"
-  cat /etc/cron.monthly/*
+  # Monthly cronjobs
+  if [ -d /etc/cron.monthly ]; then
+    echo "Monthly Jobs"
+    cat /etc/cron.monthly/*
+  fi
 
-  # Prints package specific cronjobs
-  echo "Package Jobs"
-  cat /etc/cron.d/*
+  # package specific cronjobs
+  if [ -d /etc/cron.d/* ]; then
+    echo "Package Jobs"
+    cat /etc/cron.d/*
+  fi
 }
 
+# /etc/passwd file
+function users {
+  < /etc/passwd
+}
+
+# /etc/group file
+function groups {
+  < /etc/group
+}
+
+# Processes
+function processes {
+  ps aux
+}
+
+# Apt history
+function apt_history {
+  if [ -f /var/log/apt/history.log ]; then
+    < /var/log/apt/history.log
+  fi
+}
+
+# Dpkg history
+function dpkg_history {
+  if [ -f /var/log/dpkg.log* ]; then
+    grep 'install ' /var/log/dpkg.log* | sort | cut -f1,2,4 -d' '
+  fi
+}
+
+# Package list
+function package_list {
+  if hash dpkg-query 2>/dev/null; then
+    dpkg-query -l
+  fi
+}
+
+# Scans ports
+function port_scanner {
+  if hash netstat 2>/dev/null; then
+    netstat -tulpn
+  else
+    echo "net-tools not installed (apt intall net-tools)"
+  fi
+  if hash nmap 2>/dev/null; then
+    echo "****REMOVE NMAP AFTER SCANNING****"
+    nmap -sT -O localhost
+  else
+    echo "nmap not installed (apt install nmap)"
+  fi
+}
+
+# Firewall information
+function firewall {
+  if hash ufw 2>/dev/null; then
+    ufw status verbose
+  else
+    echo "ufw not isntalled (apt install ufw)"
+  fi
+}
+
+# --- HTML PRINT --- #
 cat << _EOF_ > ./audit.html
 <html>
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -77,173 +167,63 @@ cat << _EOF_ > ./audit.html
   <link rel="stylesheet" type="text/css" href="./main.css" media="screen">
   <title>System Audit</title>
 </head>
-
 <body>
   <!-- HEADER-->
   <div id="header">
     <pre>
 <a class=title name="top">System Audit</a>
-  <a class="subtitle">Page created $(date +"%H:%M:%S")</a>
-
+  <a class="subtitle">Page created $TIME</a>
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 	</pre>
-
   </div>
-  <!--ACTUAL CONTENTS-->
+
+  
+<!--ACTUAL CONTENTS-->
   <div id="main">
 
+  
+<!--SYSTEM INFORMATION-->
 <pre>
-$(whoami)@$(hostname)
-OS: $(grep 'PRETTY_NAME' < /etc/os-release | sed 's/"//g' | sed 's/PRETTY_NAME=//')
-Kernel: $(uname -r)
-Uptime: $(uptime -p)
-Shell: $0
-DE: $desktop
+$USER@$HOST
+OS: $OS
+Kernel: $KERNEL
+Uptime: $UP
+Shell: $SHELL
+DE: $DESKTOP
 </pre>
 
-<button class="collapsible">Users</button>
-<div class="content">
-<pre>
-$(grep sh < /etc/passwd)
-</pre>
-</div>
 
-<button class="collapsible">Groups</button>
-<div class="content">
-<pre>
-$(< /etc/group)
-</pre>
-</div>
+<!--AUTOMATICALLY PLACES FUNCTION OUTPUT-->
+$(for func in sudoers services mediafiles crontabs users groups processes port_scanner apt_history dpkg_history package_list firewall; do
+  echo "<button class="collapsible">$func</button>"
+  echo "<div class="content">"
+  echo "<pre>"
+  $ $func
+  echo "</pre>"
+  echo "</div>"
+done)
 
-<button class="collapsible">Sudo Users</button>
-<div class="content">
-<pre>
-$(sudoers)
-</pre>
-</div>
 
-<button class="collapsible">Home Directories</button>
-<div class="content">
-<pre>
-$(tree /home -a -I '.cache' --charset unicode)
-</pre>
-</div>
+<!--MANUALLY ADD SECTIONS HERE-->
 
-<button class="collapsible">Media Files</button>
-<div class="content">
-<pre>
-$(lismedia)
-</pre>
-</div>
 
-<button class="collapsible">Processes</button>
-<div class="content">
-<pre>
-$(ps aux)
-</pre>
-</div>
-
-<button class="collapsible">Service List</button>
-<div class="content">
-<pre>
-$(services)
-</pre>
-</div>
-
-<button class="collapsible">Package History a.k.a. what did they leave behind?</button>
-<div class="content">
-<h2>dpkg logs</h2>
-<pre>
-$(grep 'install ' /var/log/dpkg.log* | sort | cut -f1,2,4 -d' ')
-</pre>
-<h2>apt logs</h2>
-<pre>
-$(cat /var/log/apt/history.log)
-</pre>
-</div>
-
-<button class="collapsible">Installed Applications</button>
-<div class="content">
-<pre>
-$(dpkg-query -l)
-</pre>
-</div>
-
-<button class="collapsible">Open Ports</button>
-<div class="content">
-<pre>
-$(if hash netstat 2>/dev/null; then
-  netstat -tulpn
-else
-  echo "net-tools not installed (apt install net-tools)"
-fi)
-$(nmap -sT -O localhost)
-</pre>
-</div>
-
-<button class="collapsible">Firewall Configuration</button>
-<div class="content">
-<pre>
-$(ufw status verbose)
-</pre>
-</div>
-
-<button class="collapsible">Filesystem Permissions</button>
-<div class="content">
-<h2>Mounting</h2>
-<pre>
-$(cat /etc/fstab)
-
-Ensure nodev, nosuid, noexec has been added to all removable media.
-</pre>
-<h2>World writable directories without sticky bit set</h2>
-<pre>
-$(df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null)
-
-Use 'df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null | xargs chmod a+t' to remediate this!
-</pre>
-<h2>File Permissions</h2>
-<pre>
-$(stat -c "%a %n" /root)
-/root - Should be 700!
-$(stat -c "%a %n" /var/log/audit)
-/var/log/audit - Should be 700!
-$(stat -c "%a %n" /etc/rc.d/init.d/iptables)
-/etc/rc.d/init.d/iptables - Should be 740!
-$(stat -c "%a %n" /sbin/iptables)
-/sbin/iptables - Should be 740!
-$(stat -c "%a %n" /etc/skel)
-/etc/skel - Should be 700!
-$(stat -c "%a %n" /etc/rsyslog.conf)
-/etc/rsyslog.conf - Should be 600!
-$(stat -c "%a %n" /etc/security/access.conf)
-/etc/security/access.conf - Should be 640!
-$(stat -c "%a %n" /etc/sysctl.conf)
-/etc/sysctl.conf - Should be 600!
-<button class="collapsible">Crontabs</button>
-<div class="content">
-<pre>
-$(crontabs)
-</pre>
-</div>
 
   </div>
-
   <!--FOOTER-->
   <div id="footer">
     <pre>
-
+    
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-<a class=link href="#top">Top</a>
+<a class=link href="#top">Top</a> - <a class=link href="https://github.com/Daveed9/rosefish/">GitHub</a>
     </pre>
   </div>
 
+  
+<!--SCRIPT TO SHOW AND HIDE SECTIONS-->
 <script>
 var coll = document.getElementsByClassName("collapsible");
 var i;
-
 for (i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function() {
     this.classList.toggle("active");
@@ -257,7 +237,7 @@ for (i = 0; i < coll.length; i++) {
 }
 </script>
 
-</body>
 
+</body>
 </html>
 _EOF_
