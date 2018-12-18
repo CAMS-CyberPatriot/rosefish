@@ -59,52 +59,49 @@ function mediafiles {
 function crontabs {
   # user crontabs
   cut -f1 -d: /etc/passwd | while read -r user; do
-    if [[ $user  = *"no crontab for"* ]];
-    then
-      :
-    else
-      echo "$user:"
-      crontab -u $user -l
-    fi
+    echo "$user:"
+    crontab -u $user -l
   done
 
   # jobs from /etc/crontab
-  echo "/etc/crontab"
+  echo "/etc/crontab:"
   < /etc/crontab
 
   # Daily cronjobs
   if [ -d /etc/cron.daily ]; then
-    echo "Daily Jobs"
+    echo "Daily Jobs:"
     cat /etc/cron.daily/*
   fi
 
   # Weekly cronjobs
   if [ -d /etc/cron.weekly ]; then
-    echo "Weekly Jobs"
+    echo "Weekly Jobs:"
     cat /etc/cron.weekly/*
   fi
 
   # Monthly cronjobs
   if [ -d /etc/cron.monthly ]; then
-    echo "Monthly Jobs"
+    echo "Monthly Jobs:"
     cat /etc/cron.monthly/*
   fi
 
   # package specific cronjobs
-  if [ -d /etc/cron.d/* ]; then
-    echo "Package Jobs"
-    cat /etc/cron.d/*
+  if [ -d /etc/cron.d/ ]; then
+    for file in /etc/cron.d/*; do
+      echo "$file:"
+      cat $file
+    done
   fi
 }
 
 # /etc/passwd file
 function users {
-  < /etc/passwd
+  cat /etc/passwd
 }
 
 # /etc/group file
 function groups {
-  < /etc/group
+  cat /etc/group
 }
 
 # Processes
@@ -115,7 +112,7 @@ function processes {
 # Apt history
 function apt_history {
   if [ -f /var/log/apt/history.log ]; then
-    < /var/log/apt/history.log
+    cat /var/log/apt/history.log
   fi
 }
 
@@ -198,7 +195,7 @@ $(for func in sudoers services mediafiles crontabs users groups processes port_s
   echo "<button class="collapsible">$func</button>"
   echo "<div class="content">"
   echo "<pre>"
-  $ $func
+  $func
   echo "</pre>"
   echo "</div>"
 done)
