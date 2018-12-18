@@ -18,6 +18,8 @@ audits debian based systems to an html page
 ## Missing:
 - home directory tree
 - filesystem analysis
+- highlight/bold lines of importance (using sed?)
+- do not print user crontab header if user has no crontab
 
 # Contributing
 rosefi.sh - the bash script used to create the html page.\
