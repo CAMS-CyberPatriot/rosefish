@@ -2,8 +2,6 @@
 audits debian based systems to an html page
 ---
 # Features
-
-## Working:
 - Prints system information: user, hostname, operating system, kernel version, uptime, shell, & desktop environment
 - (sudoers) Prints sudoers files
 - (services) Lists services
@@ -14,12 +12,6 @@ audits debian based systems to an html page
 - (port_scanner) Prints information on open/used ports
 - (apt_history,dpkg_history,package_list) Package information
 - (firewall) Firewall information
-
-## Missing:
-- home directory tree
-- filesystem analysis
-- highlight/bold lines of importance (using sed?)
-- do not print user crontab header if user has no crontab
 
 # Contributing
 rosefi.sh - the bash script used to create the html page.\
