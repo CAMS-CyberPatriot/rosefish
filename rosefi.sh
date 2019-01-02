@@ -59,36 +59,38 @@ function mediafiles {
 function crontabs {
   # user crontabs
   cut -f1 -d: /etc/passwd | while read -r user; do
-    echo "$user:"
-    crontab -u $user -l
+    if [[ $(crontab -u $user -l) ]]; then
+      echo "<bold>$user:</bold>"
+      crontab -u $user -l
+    fi
   done
 
   # jobs from /etc/crontab
-  echo "/etc/crontab:"
+  echo "<bold>/etc/crontab:</bold>"
   < /etc/crontab
 
   # Daily cronjobs
   if [ -d /etc/cron.daily ]; then
-    echo "Daily Jobs:"
+    echo "<bold>Daily Jobs:</bold>"
     cat /etc/cron.daily/*
   fi
 
   # Weekly cronjobs
   if [ -d /etc/cron.weekly ]; then
-    echo "Weekly Jobs:"
+    echo "<bold>Weekly Jobs:</bold>"
     cat /etc/cron.weekly/*
   fi
 
   # Monthly cronjobs
   if [ -d /etc/cron.monthly ]; then
-    echo "Monthly Jobs:"
+    echo "<bold>Monthly Jobs:</bold>"
     cat /etc/cron.monthly/*
   fi
 
   # package specific cronjobs
   if [ -d /etc/cron.d/ ]; then
     for file in /etc/cron.d/*; do
-      echo "$file:"
+      echo "<bold>$file:</bold>"
       cat $file
     done
   fi
