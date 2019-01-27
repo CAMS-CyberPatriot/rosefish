@@ -24,6 +24,11 @@ SHELL=$0
 
 # --- FUNCTIONS --- #
 
+# prints home directory file tree
+function home_tree {
+  find /home -print | sed -e "s;/home;\.;g;s;[^/]*\/;|__;g;s;__|; |;g"
+}
+
 # sudoers files
 function sudoers {
   echo "/etc/sudoers"
@@ -193,7 +198,7 @@ DE: $DESKTOP
 
 
 <!--AUTOMATICALLY PLACES FUNCTION OUTPUT-->
-$(for func in sudoers services mediafiles crontabs users groups processes port_scanner apt_history dpkg_history package_list firewall; do
+$(for func in sudoers services mediafiles home_tree crontabs users groups processes port_scanner apt_history dpkg_history package_list firewall; do
   echo "<button class="collapsible">$func</button>"
   echo "<div class="content">"
   echo "<pre>"
