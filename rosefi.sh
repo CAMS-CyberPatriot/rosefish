@@ -53,11 +53,8 @@ function services {
 }
 
 # Lists mediafiles
-function mediafiles {
-  for filetype in *.jpeg , *.mp4 , *.webm , *.mkv , *.flv , *.vob , *.omv , *.ogg , *.drc , *.gif , *.gifv , *.mng , *.avi , *.mov , *.qt , *.wmv , *.yuh , *.rm , *.rmvb , *.asf , *.amv , *.mp4 , *.m4p , *.m4v , *.mpg , *.m4v , *.mpg , *.mp2 , *.mpeg , *.mpe , *.mpv , *.m2v , *.svi , *.3gp , *.3g2 , *.mxf , *.roq , *.nsv , *.flv , *.f4p , *.f4a , *.f4b , *.aif , *.iff , *.m3u , *.m4a , *.mid , *.mp3 , *.mpa , *.wav , *.wma , *.bmp , *.dds , *.jpg , *.png , *.psd , *.pspimage , *.tga , *.thm , *.tif , *.tiff , *.yuv , *.flac
-  do
-    find / -iname $filetype -type f 2>/dev/null
-  done
+function mediafiles {  
+  find / -type f \( -iname "*.jpeg" -o -iname "*.jpg" -o -iname "*.mp4" -o -iname "*.webm" -o -iname "*.mkv" -o -iname "*.flv" -o -iname "*.vob" -o -iname "*.omv" -o -iname "*.ogg" -o -iname "*.drc" -o -iname "*.gif" -o -iname "*.gifv" -o -iname "*.mng" -o -iname "*.avi" -o -iname "*.mov" -o -iname "*.qt" -o -iname "*.wmv" -o -iname "*.yuh" -o -iname "*.rm" -o -iname "*.rmvb" -o -iname "*.asf" -o -iname "*.amv" -o -iname "*.mp4" -o -iname "*.m4p" -o -iname "*.m4v" -o -iname "*.mpg" -o -iname "*.m4v" -o -iname "*.mpg" -o -iname "*.mp2" -o -iname "*.mpeg" -o -iname "*.mpe" -o -iname "*.mpv" -o -iname "*.m2v" -o -iname "*.svi" -o -iname "*.3gp" -o -iname "*.3g2" -o -iname "*.mxf" -o -iname "*.roq" -o -iname "*.nsv" -o -iname "*.flv" -o -iname "*.f4p" -o -iname "*.f4a" -o -iname "*.f4b" -o -iname "*.aif" -o -iname "*.iff" -o -iname "*.m3u" -o -iname "*.m4a" -o -iname "*.mid" -o -iname "*.mp3" -o -iname "*.mpa" -o -iname "*.wav" -o -iname "*.wma" -o -iname "*.bmp" -o -iname "*.dds" -o -iname "*.jpg" -o -iname "*.png" -o -iname "*.psd" -o -iname "*.pspimage" -o -iname "*.tga" -o -iname "*.thm" -o -iname "*.tif" -o -iname "*.tiff" -o -iname "*.yuv" -o -iname "*.flac" \) 2>/dev/null
 }
 
 # Lists crontabs
