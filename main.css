@@ -68,3 +68,7 @@ body  {
   overflow:hidden;
   background-color:inherit;
 }
+
+pre {
+  white-space: pre-wrap;
+}
