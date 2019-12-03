@@ -54,7 +54,7 @@ function services {
 
 # Lists mediafiles
 function mediafiles {  
-  find / -type f \( -iname "*.jpeg" -o -iname "*.jpg" -o -iname "*.mp4" -o -iname "*.webm" -o -iname "*.mkv" -o -iname "*.flv" -o -iname "*.vob" -o -iname "*.omv" -o -iname "*.ogg" -o -iname "*.drc" -o -iname "*.gif" -o -iname "*.gifv" -o -iname "*.mng" -o -iname "*.avi" -o -iname "*.mov" -o -iname "*.qt" -o -iname "*.wmv" -o -iname "*.yuh" -o -iname "*.rm" -o -iname "*.rmvb" -o -iname "*.asf" -o -iname "*.amv" -o -iname "*.mp4" -o -iname "*.m4p" -o -iname "*.m4v" -o -iname "*.mpg" -o -iname "*.m4v" -o -iname "*.mpg" -o -iname "*.mp2" -o -iname "*.mpeg" -o -iname "*.mpe" -o -iname "*.mpv" -o -iname "*.m2v" -o -iname "*.svi" -o -iname "*.3gp" -o -iname "*.3g2" -o -iname "*.mxf" -o -iname "*.roq" -o -iname "*.nsv" -o -iname "*.flv" -o -iname "*.f4p" -o -iname "*.f4a" -o -iname "*.f4b" -o -iname "*.aif" -o -iname "*.iff" -o -iname "*.m3u" -o -iname "*.m4a" -o -iname "*.mid" -o -iname "*.mp3" -o -iname "*.mpa" -o -iname "*.wav" -o -iname "*.wma" -o -iname "*.bmp" -o -iname "*.dds" -o -iname "*.jpg" -o -iname "*.png" -o -iname "*.psd" -o -iname "*.pspimage" -o -iname "*.tga" -o -iname "*.thm" -o -iname "*.tif" -o -iname "*.tiff" -o -iname "*.yuv" -o -iname "*.flac" \) 2>/dev/null | grep -v "^/usr" | grep -v "^/var"
+  find / -type f \( -iname "*.xlsx" -o -iname "*.txt" -o -iname "*.jpeg" -o -iname "*.jpg" -o -iname "*.mp4" -o -iname "*.webm" -o -iname "*.mkv" -o -iname "*.flv" -o -iname "*.vob" -o -iname "*.omv" -o -iname "*.ogg" -o -iname "*.drc" -o -iname "*.gif" -o -iname "*.gifv" -o -iname "*.mng" -o -iname "*.avi" -o -iname "*.mov" -o -iname "*.qt" -o -iname "*.wmv" -o -iname "*.yuh" -o -iname "*.rm" -o -iname "*.rmvb" -o -iname "*.asf" -o -iname "*.amv" -o -iname "*.mp4" -o -iname "*.m4p" -o -iname "*.m4v" -o -iname "*.mpg" -o -iname "*.m4v" -o -iname "*.mpg" -o -iname "*.mp2" -o -iname "*.mpeg" -o -iname "*.mpe" -o -iname "*.mpv" -o -iname "*.m2v" -o -iname "*.svi" -o -iname "*.3gp" -o -iname "*.3g2" -o -iname "*.mxf" -o -iname "*.roq" -o -iname "*.nsv" -o -iname "*.flv" -o -iname "*.f4p" -o -iname "*.f4a" -o -iname "*.f4b" -o -iname "*.aif" -o -iname "*.iff" -o -iname "*.m3u" -o -iname "*.m4a" -o -iname "*.mid" -o -iname "*.mp3" -o -iname "*.mpa" -o -iname "*.wav" -o -iname "*.wma" -o -iname "*.bmp" -o -iname "*.dds" -o -iname "*.jpg" -o -iname "*.png" -o -iname "*.psd" -o -iname "*.pspimage" -o -iname "*.tga" -o -iname "*.thm" -o -iname "*.tif" -o -iname "*.tiff" -o -iname "*.yuv" -o -iname "*.flac" \) 2>/dev/null | grep -v "^/usr" | grep -v "^/var"
 }
 
 # Lists crontabs
@@ -122,7 +122,7 @@ function apt_history {
 
 # Dpkg history
 function dpkg_history {
-  if [ -f /var/log/dpkg.log* ]; then
+  if [ -f /var/log/dpkg.log ]; then
     grep 'install ' /var/log/dpkg.log* | sort | cut -f1,2,4 -d' '
   fi
 }
