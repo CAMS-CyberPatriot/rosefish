@@ -57,13 +57,13 @@ rosefi.sh - the bash script used to create the html page.\
 	HTML Print is where the audit page is created. There is a large
 	'here' doc that outputs to 'audit.html'. The syntax for adding a
 	section to the page is as follows:
-	```html
-	<button class="collapsible">Section Header</button>
-	<div class="content">
-	<pre>
-	$(function)
-	</pre>
-	</div>
-	```
+```html
+<button class="collapsible">Section Header</button>
+<div class="content">
+<pre>
+$(function)
+</pre>
+</div>
+```
 
 main.css - a boring stylesheet
