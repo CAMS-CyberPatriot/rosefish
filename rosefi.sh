@@ -2,7 +2,7 @@
 
 # --- VARIABLES --- #
 
-# Creates DESKTOP containing the current desktop environment 
+# Creates DESKTOP containing the current desktop environment
 if [ "$XDG_CURRENT_DESKTOP" = "" ]
 then
 	DESKTOP=$(echo "$XDG_DATA_DIRS" | sed 's/.*\(xfce\|kde\|gnome\).*/\1/')
@@ -39,7 +39,7 @@ function sudoers {
 			grep -v '#' $file | awk 'NF'
 		done
 	fi
-} 
+}
 
 # Lists services on systems with systemd or Upstart
 function services {
@@ -53,7 +53,7 @@ function services {
 }
 
 # Lists mediafiles
-function mediafiles {	
+function mediafiles {
 	if hash locate 2>/dev/null; then
 		updatedb 2>/dev/null
 		locate -iq --regex '/.*\.(jpeg|jpg|gif|gifv|png|bmp|ps|psd|svg|tif|tiff|aif|cda|iff|mid|midi|mp3|m4a|mpa|ogg|wav|wma|wpl|flac|m3u|3g2|3gp|avi|flv|h264|m4v|mkv|mov|mp4|mpg|mpeg|rm|swf|vob|wmv|7z|arj|deb|pkg|rar|rpm|tar|tar.gz|z|zip|bin|dmg|iso|toast|vcd|dat|db|dbf|mdb|sav|sql|xml|bat|bin|cgi|pl|jar|py|sh|fon|otf|ttf|csv|ods|xlr|xls|xlsx|doc|docx|odt|pdf|rtf|tex|txt|wks|wps|wpd)'
@@ -183,11 +183,11 @@ cat << _EOF_ > ./audit.html
 	</pre>
 	</div>
 
-	
+
 <!--ACTUAL CONTENTS-->
 	<div id="main">
 
-	
+
 <!--SYSTEM INFORMATION-->
 <pre>
 $USER@$HOST
@@ -218,14 +218,14 @@ done)
 	<!--FOOTER-->
 	<div id="footer">
 		<pre>
-		
+
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 <a class=link href="#top">Top</a> - <a class=link href="https://github.com/Daveed9/rosefish/">GitHub</a>
 		</pre>
 	</div>
 
-	
+
 <!--SCRIPT TO SHOW AND HIDE SECTIONS-->
 <script>
 var coll = document.getElementsByClassName("collapsible");
