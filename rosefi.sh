@@ -36,7 +36,7 @@ function sudoers {
 	if [ -d /etc/sudoers.d ]; then
 		for file in /etc/sudoers.d/*; do
 			echo "$file"
-			grep -v '#' $file | awk 'NF'
+			grep -v '#' "$file" | awk 'NF'
 		done
 	fi
 }
@@ -66,9 +66,9 @@ function mediafiles {
 function crontabs {
 	# user crontabs
 	cut -f1 -d: /etc/passwd | while read -r user; do
-		if [[ $(crontab -u $user -l) ]]; then
+		if [[ $(crontab -u "$user" -l) ]]; then
 			echo "<bold>$user:</bold>"
-			crontab -u $user -l
+			crontab -u "$user" -l
 		fi
 	done
 
@@ -98,7 +98,7 @@ function crontabs {
 	if [ -d /etc/cron.d/ ]; then
 		for file in /etc/cron.d/*; do
 			echo "<bold>$file:</bold>"
-			cat $file
+			cat "$file"
 		done
 	fi
 }
@@ -201,8 +201,8 @@ DE: $DESKTOP
 
 <!--AUTOMATICALLY PLACES FUNCTION OUTPUT-->
 $(for func in sudoers services mediafiles home_tree crontabs users groups processes port_scanner apt_history dpkg_history package_list firewall; do
-	echo "<button class="collapsible">$func</button>"
-	echo "<div class="content">"
+	echo "<button class=\"collapsible\">$func</button>"
+	echo "<div class=\"content\">"
 	echo "<pre>"
 	$func
 	echo "</pre>"
